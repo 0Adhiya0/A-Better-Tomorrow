@@ -1,0 +1,693 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Walk With Jesus</title>
+<style>
+:root{box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);
+--bg:#e6f1ff;--card:#fff;--ink:#11284b;--mute:#5a6a86;--line:#c8d0de;--accent:#1c4a9c;
+--rosary:#c9a227;--bible:#2f7fd6;--mass:#7b5cc4;--kind:#2e9e6a;--gold:#c9a227;color-scheme:light}
+@media(prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0b1730;--card:#12254a;--ink:#eef3fb;--mute:#a3b2cc;--line:#3a4d73;--accent:#5b8fe8;--gold:#e3c25a;--rosary:#e3c25a;color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#0b1730;--card:#12254a;--ink:#eef3fb;--mute:#a3b2cc;--line:#3a4d73;--accent:#5b8fe8;--gold:#e3c25a;--rosary:#e3c25a;color-scheme:dark}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+*,*:before,*:after{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:Georgia,"Times New Roman",serif;line-height:1.55}
+header{text-align:center;padding:28px 16px 20px;background:linear-gradient(160deg,#0f2a5c,#1d4fa3);color:#fff;border-bottom:4px solid var(--gold)}
+h1{margin:0;color:#fff;font-size:clamp(1.9rem,6vw,3rem);letter-spacing:.04em}
+h1 span{color:#f0cf6a}
+.tag{color:#d5dcea;margin:6px 0 0;font-style:italic}
+.tabs{display:flex;gap:8px;justify-content:center;padding:12px;position:sticky;top:env(safe-area-inset-top,0px);background:var(--bg);z-index:5}
+.tabs button{font:inherit;font-weight:bold;padding:10px 18px;border-radius:6px;border:2px solid var(--accent);border-bottom-width:4px;background:var(--card);color:var(--accent);cursor:pointer}
+.tabs button[aria-selected="true"]{background:var(--accent);color:#fff;border-bottom-color:var(--gold)}
+main{max-width:980px;margin:0 auto;padding:8px 14px 40px}
+.card{background:var(--card);border:1px solid var(--line);border-top:3px solid var(--gold);border-radius:12px;padding:16px;margin:14px 0}
+h2{margin:0 0 8px;font-size:1.25rem}
+.verse{border-left:4px solid var(--accent);padding:6px 14px;font-style:italic}
+.verse small{display:block;font-style:normal;color:var(--mute)}
+.grid{display:grid;gap:14px;grid-template-columns:repeat(auto-fit,minmax(280px,1fr))}
+.row{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:10px 0;border-bottom:1px dashed var(--line)}
+.row:last-child{border:0}
+.dot{display:inline-block;width:12px;height:12px;border-radius:50%;margin-right:8px}
+.ctl{display:flex;align-items:center;gap:8px}
+.ctl button,.btn{font:inherit;border:1px solid var(--line);border-bottom:3px solid #aeb9cc;background:var(--card);color:var(--ink);border-radius:6px;padding:6px 12px;cursor:pointer}
+.ctl button.on{background:var(--accent);color:#fff;border-color:var(--accent);border-bottom-color:var(--gold)}
+.num{min-width:2ch;text-align:center;font-weight:bold}
+textarea,input[type=text]{width:100%;font:inherit;padding:8px;border-radius:6px;border:1px solid var(--line);background:var(--bg);color:var(--ink)}
+.cal{display:grid;grid-template-columns:repeat(7,1fr);gap:5px}
+.cal .h{text-align:center;font-size:.75rem;color:var(--mute)}
+.cell{aspect-ratio:1;border-radius:10px;border:2px solid transparent;background:var(--bg);display:flex;flex-direction:column;align-items:center;justify-content:center;font-size:.8rem;cursor:pointer;padding:0;color:var(--ink);font-family:inherit}
+.cell.sel{border-color:var(--accent)}
+.cell.today{font-weight:bold;text-decoration:underline}
+.pips{display:flex;gap:2px;margin-top:2px;min-height:7px}
+.pips i{width:6px;height:6px;border-radius:50%}
+.legend{display:flex;flex-wrap:wrap;gap:12px;font-size:.85rem;color:var(--mute);margin-top:10px}
+.legend i{display:inline-block;width:10px;height:10px;border-radius:50%;margin-right:5px}
+.nav{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px}
+.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:10px}
+.stat{text-align:center;padding:10px;border-radius:12px;background:var(--bg)}
+.stat b{display:block;font-size:1.6rem}
+.chart{overflow-x:auto}
+.issues{display:flex;flex-wrap:wrap;gap:8px;margin:10px 0}
+.issues button{font:inherit;padding:8px 14px;border-radius:6px;border:1px solid var(--line);border-bottom:3px solid #aeb9cc;background:var(--card);color:var(--ink);cursor:pointer}
+.issues button[aria-pressed="true"]{background:var(--accent);color:#fff;border-color:var(--accent);border-bottom-color:var(--gold)}
+ul.acts{padding-left:20px;margin:6px 0}
+ul.acts li{margin:6px 0}
+.hint{color:var(--mute);font-size:.9rem}
+.tabs{flex-wrap:wrap}select{width:100%;font:inherit;padding:8px;border-radius:6px;border:1px solid var(--line);background:var(--bg);color:var(--ink)}
+label.f{display:block;margin:10px 0 0;font-size:.9rem;color:var(--mute)}
+.chip{display:inline-block;border:2px solid var(--line);border-radius:6px;padding:3px 10px;margin:3px 4px 3px 0;font-size:.85rem}
+.pl{border-left:6px solid var(--accent);background:var(--card);border-radius:12px;padding:12px 14px;margin:10px 0;border-top:1px solid var(--line);border-right:1px solid var(--line);border-bottom:1px solid var(--line)}
+.pl .top{display:flex;justify-content:space-between;gap:8px;align-items:flex-start}
+.warn{background:var(--bg);border-radius:10px;padding:8px 12px;font-size:.9rem;color:var(--mute);margin:10px 0 0}
+details.pr{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:10px 14px;margin:10px 0}
+details.pr summary{cursor:pointer;font-weight:bold;font-size:1.05rem}
+.ctl input[type=number]{width:7ch;font:inherit;text-align:center;padding:6px 4px;border-radius:6px;border:1px solid var(--line);background:var(--bg);color:var(--ink)}
+.tg{overflow-x:auto;padding-bottom:8px}
+.tr{display:grid;gap:3px;align-items:center;margin:4px 0;min-width:max-content}
+.tr .lab{position:sticky;left:0;background:var(--card);font-size:.8rem;padding-right:6px;z-index:1;white-space:nowrap}
+.tb{width:16px;height:16px;border-radius:4px;border:0;padding:0;cursor:pointer}
+.tb.sel{outline:2px solid var(--accent);outline-offset:1px}
+.tb.td{box-shadow:0 0 0 2px var(--ink)}
+.dn{font-size:.6rem;color:var(--mute);text-align:center}
+:root{--aur:radial-gradient(60% 50% at 12% 8%,rgba(110,225,200,.5),transparent 70%),radial-gradient(55% 45% at 88% 12%,rgba(160,150,255,.42),transparent 70%),radial-gradient(70% 55% at 50% 100%,rgba(120,195,255,.55),transparent 70%),linear-gradient(180deg,#d6eaff,#e9f4ff 55%,#f7fbff)}
+@media(prefers-color-scheme:dark){:root:not([data-theme="light"]){--aur:radial-gradient(60% 50% at 12% 8%,rgba(40,200,170,.35),transparent 70%),radial-gradient(55% 45% at 88% 12%,rgba(120,90,230,.35),transparent 70%),radial-gradient(70% 55% at 50% 100%,rgba(40,110,230,.4),transparent 70%),linear-gradient(180deg,#0a1630,#0f2147)}}
+:root[data-theme="dark"]{--aur:radial-gradient(60% 50% at 12% 8%,rgba(40,200,170,.35),transparent 70%),radial-gradient(55% 45% at 88% 12%,rgba(120,90,230,.35),transparent 70%),radial-gradient(70% 55% at 50% 100%,rgba(40,110,230,.4),transparent 70%),linear-gradient(180deg,#0a1630,#0f2147)}
+body:before{content:"";position:fixed;inset:0;z-index:-1;background:var(--aur);background-size:140% 140%;animation:aur 22s ease-in-out infinite alternate}
+@keyframes aur{from{background-position:0 0;filter:hue-rotate(0deg)}to{background-position:100% 100%;filter:hue-rotate(28deg)}}
+@media(prefers-reduced-motion:reduce){body:before{animation:none}#bc{transition:none}}
+.tabs{background:color-mix(in srgb,var(--bg) 80%,transparent);backdrop-filter:blur(6px)}
+a{color:var(--accent)}
+button:focus-visible,input:focus-visible,textarea:focus-visible,select:focus-visible,summary:focus-visible,a:focus-visible{outline:3px solid var(--gold);outline-offset:2px}
+.ctl button,.btn,.issues button,.tabs button{min-height:40px}
+.meter{height:10px;border-radius:5px;background:var(--line);overflow:hidden;margin:6px 0 4px}
+.meter i{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--accent),var(--gold));transition:width .4s}
+.feast{background:linear-gradient(135deg,#fff3c4,#f0cf6a);color:#3b2a00;border:2px solid var(--gold);border-radius:8px;padding:10px 12px;margin:8px 0;font-weight:bold}
+.next{font-size:.9rem;color:var(--mute)}
+.bless{background:var(--bg);border-left:4px solid var(--gold);border-radius:6px;padding:10px 12px;margin-top:10px}
+.art{margin:0 0 12px}.art svg{width:100%;height:auto;display:block;border-radius:8px;border:1px solid var(--line)}.art figcaption{font-size:.85rem;color:var(--mute);margin-top:4px;text-align:center}
+#bc{width:120px;height:120px;border-radius:50%;margin:10px auto;display:flex;align-items:center;justify-content:center;text-align:center;background:radial-gradient(circle,#e3f1ff,#8fb9f5);color:#11284b;border:3px solid var(--gold);transition:transform 4s ease-in-out}
+#bc.in,#bc.hold{transform:scale(1.35)}#bc.out{transform:scale(1);transition-duration:6s}
+#toast{position:fixed;left:50%;bottom:calc(20px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);background:var(--accent);color:#fff;border-bottom:3px solid var(--gold);padding:8px 16px;border-radius:6px;opacity:0;pointer-events:none;transition:opacity .3s;z-index:20}
+#toast.on{opacity:1}
+#totop{position:fixed;right:14px;bottom:calc(16px + env(safe-area-inset-bottom,0px));z-index:15;display:none}
+.goals{display:flex;flex-wrap:wrap;gap:12px;margin:8px 0}
+.goals label{font-size:.85rem;color:var(--mute)}
+.goals input{width:7ch;font:inherit;padding:4px 6px;border-radius:8px;border:1px solid var(--line);background:var(--bg);color:var(--ink)}
+footer{text-align:center;color:var(--mute);padding:20px;font-size:.9rem}
+
+.card{background:color-mix(in srgb,var(--card) 93%,transparent);box-shadow:0 2px 12px rgba(20,60,120,.09)}
+.ctl button{min-width:44px;min-height:44px}.btn{min-height:44px}.row{flex-wrap:wrap}
+#greet{margin:10px 0 0;font-size:1.05rem;color:#fff}html{scroll-behavior:smooth}
+.verse small a{white-space:nowrap}
+@media(max-width:600px){.tabs{gap:6px;padding:8px}.tabs button{flex:1 1 calc(50% - 6px);padding:8px 4px;font-size:.9rem}main{padding:6px 10px 40px}}
+@media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
+</style>
+</head>
+<body>
+<header>
+  <h1>WALK WITH <span>JESUS</span></h1>
+  <p class="tag">Grow in faith. Live with kindness. Bring light to the world.</p>
+</header>
+<nav class="tabs" role="tablist">
+  <button role="tab" id="t-j" aria-selected="true" data-tab="journey">✝ My Journey with Jesus</button>
+  <button role="tab" id="t-l" aria-selected="false" data-tab="light">🕯 Be the Light</button>
+  <button role="tab" id="t-p" aria-selected="false" data-tab="pray">🙏 Pledge a Prayer</button>
+  <button role="tab" id="t-v" aria-selected="false" data-tab="verses">📖 Verses &amp; Gratitude</button>
+</nav>
+
+<main>
+<!-- JOURNEY -->
+<section id="journey">
+  <details class="pr" id="guide"><summary>👋 New here? How to use this site</summary><ol style="margin:8px 0 0;padding-left:20px"><li>In <b>My Journey</b>, log your rosary, short prayers, Bible reading, Holy Mass and good deeds each day, and watch the ring fill.</li><li>In <b>Be the Light</b>, choose a real problem, read what Jesus teaches, and do one kind act.</li><li>In <b>Pledge a Prayer</b>, promise prayers for people in need and tap “I prayed today”.</li><li>In <b>Verses &amp; Gratitude</b>, find comfort for hard times and write a thank-you letter to God.</li><li>Everything is saved privately on this device.</li></ol></details>
+  <div class="card" id="spec">
+    <h2>✨ Speciality of the Day</h2>
+    <div class="nav" style="margin:0"><button class="btn" id="spv" aria-label="Previous day">‹</button><span class="hint" id="sdate" style="text-align:center"></span><button class="btn" id="snx" aria-label="Next day">›</button></div>
+    <p style="text-align:center;margin:4px 0 0"><button class="btn" id="stoday" hidden>Back to today</button></p>
+    <div id="sfeast"></div>
+    <div class="grid" style="margin-top:10px;grid-template-columns:repeat(auto-fit,minmax(210px,1fr))">
+      <div><b>Next feast</b><div id="sfnext" class="next"></div></div>
+      <div><b>Devotion of the weekday</b><div id="sdev"></div></div>
+      <div><b id="smt"></b><div id="smys"></div></div>
+      <div><b>Today’s great work</b><div id="sact" style="margin-bottom:8px"></div><button class="btn" id="sdo">✓ I did today’s great work</button></div>
+    </div>
+    <p class="hint" style="margin:10px 0 0">Based on the General Roman Calendar and traditional weekday devotions. Local feast dates may differ.</p>
+  </div>
+  <div class="card" id="ejc"><h2>🙏 Short prayers to say with your rosary</h2>
+    <p class="hint" style="margin:0 0 8px">Ejaculatory prayers are brief aspirations you can lift to God anywhere: between decades, at work, or in a quiet moment.</p>
+    <div class="verse" id="ejp" style="font-size:1.1rem"></div>
+    <p style="margin:10px 0"><button class="btn" id="ejn">🙏 I prayed this</button> <button class="btn" id="ejx">Another prayer ›</button></p>
+    <details class="pr"><summary>See all short prayers</summary><div id="ejl"></div></details></div>
+  <div class="card"><h2>Verse for today</h2><div class="verse" id="dv"></div></div>
+
+  <div class="grid">
+    <div class="card">
+      <h2>Journal: <span id="selLabel"></span></h2>
+      <div class="meter"><i id="mfill"></i></div><div class="hint" id="mtxt" style="margin-bottom:6px"></div>
+      <div class="row"><span><i class="dot" style="background:var(--rosary)"></i>Rosary count <small class="hint">(Hail Marys; +/− = 10)</small></span>
+        <span class="ctl"><button id="rm" aria-label="subtract 10" title="Subtract 10">−</button><input type="number" id="rn" min="0" max="9999" value="0" aria-label="Rosary count"><button id="rp" aria-label="add 10" title="Add 10 (one decade)">+</button></span></div>
+      <div class="row"><span><i class="dot" style="background:var(--gold)"></i>Short prayers <small class="hint">(ejaculatory)</small></span>
+        <span class="ctl"><button id="em" aria-label="less">−</button><span class="num" id="en">0</span><button id="ep" aria-label="more">+</button></span></div>
+      <div class="row"><span><i class="dot" style="background:var(--bible)"></i>Bible reading</span>
+        <span class="ctl"><button id="bt">Read</button><input type="number" id="vn" min="0" max="999" value="0" aria-label="Bible verses read"><small class="hint">verses</small></span></div>
+      <div class="row"><span><i class="dot" style="background:var(--mass)"></i>Holy Mass</span>
+        <span class="ctl"><button id="mt">Attended</button></span></div>
+      <div class="row"><span><i class="dot" style="background:var(--kind)"></i>Great works <small class="hint">(kind acts)</small></span>
+        <span class="ctl"><button id="km" aria-label="less">−</button><span class="num" id="kn">0</span><button id="kp" aria-label="more">+</button></span></div>
+      <p class="hint" style="margin:10px 0 4px">What did you read, and what is God saying to you?</p>
+      <input type="text" id="ref" placeholder="Passage read (e.g. John 3:16–21)" style="margin-bottom:8px">
+      <textarea id="note" rows="3" placeholder="Reflection, prayer, gratitude…"></textarea>
+    </div>
+
+    <div class="card">
+      <div class="nav"><button class="btn" id="pm">‹</button><h2 id="mlabel" style="margin:0"></h2><button class="btn" id="nm">›</button></div>
+      <div id="cal"></div>
+      <div class="legend">
+        <span><i style="background:var(--rosary)"></i>Rosary</span>
+        <span><i style="background:var(--bible)"></i>Bible</span>
+        <span><i style="background:var(--mass)"></i>Mass</span>
+        <span><i style="background:var(--kind)"></i>Kindness</span>
+      </div>
+      <p class="hint">The four dots inside each day show what you completed. Silver means nothing yet, light blue 1–2 done, blue 3, and gold all four. Tap a day to edit it.</p>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>Your journey so far</h2>
+    <div class="stats" id="stats"></div>
+  </div>
+  <div class="card" id="trackcard">
+    <h2>Monthly progress tracker</h2>
+    <p class="hint" style="margin:0 0 6px">Each tiny box is one day. The colour shows how close you came to your daily goal. Tap a box to open that day in your journal.</p>
+    <div class="nav"><button class="btn" id="tpm" aria-label="Previous month">‹</button><b id="tlabel"></b><button class="btn" id="tnm" aria-label="Next month">›</button></div>
+    <div class="goals">
+      <label>Rosary goal <input type="number" id="goalR" min="1" max="9999"></label>
+      <label>Bible verses goal <input type="number" id="goalV" min="1" max="999"></label>
+      <label>Great works goal <input type="number" id="goalK" min="1" max="99"></label>
+    </div>
+    <div class="tg" id="tgrid"></div>
+    <div class="legend">
+      <span><i style="background:#1e7a46;border-radius:3px"></i>150% or more</span>
+      <span><i style="background:#3fa66b;border-radius:3px"></i>Goal met</span>
+      <span><i style="background:#f0a030;border-radius:3px"></i>50–99%</span>
+      <span><i style="background:#d9534f;border-radius:3px"></i>Under 50%</span>
+      <span><i style="background:#f0c4c1;border-radius:3px"></i>Nothing logged</span>
+      <span><i style="background:var(--line);border-radius:3px"></i>Today / upcoming</span>
+    </div>
+    <p class="hint" style="margin:8px 0 0">Rosary is counted in Hail Marys (a decade is 10), so a goal of 100 means two full rosaries; set any goal you like. Holy Mass is green when attended, and a missed Sunday shows red.</p>
+  </div>
+  <div class="grid">
+    <div class="card"><h2>Kindness graph (14 days)</h2><div class="chart" id="gk"></div></div>
+    <div class="card"><h2>Rosary graph (14 days)</h2><div class="chart" id="gr"></div></div>
+  </div>
+</section>
+
+<!-- LIGHT -->
+<section id="light" hidden>
+  <div class="card">
+    <h2>Be the Light</h2>
+    <p style="margin:0">“Let your light so shine before men, that they may see your good works, and glorify your Father which is in heaven.” <span class="hint">Matthew 5:16 · KJV · <a href="https://www.biblegateway.com/passage/?search=Matthew+5%3A16&amp;version=NRSVCE" target="_blank" rel="noopener">Read in NRSV-CE ↗</a></span></p>
+    <p class="hint">Choose a real problem in our world. Read what Jesus’ teaching says, reflect, then take one small action. Tap “I did this” to add it to your kindness count.</p>
+    <div class="issues" id="issues" role="group" aria-label="Issues"></div>
+  </div>
+  <div class="card" id="issueCard"></div>
+</section>
+<!-- PRAYER PLEDGES -->
+<section id="pray" hidden>
+  <div class="card">
+    <h2>Pledge a Prayer</h2>
+    <p class="hint" style="margin:0">Choose a need, name who you are praying for, and promise a prayer. Every time you pray, tap “I prayed today”. Rosary, Mass and Bible pledges also count in your journal.</p>
+    <div class="issues" id="pcats" role="group" aria-label="Prayer categories"></div>
+    <div class="verse" id="pverse"></div>
+    <p id="pprayer" style="font-style:italic;margin:10px 0 0"></p>
+    <p class="warn" id="pnote" hidden>Prayer and action go together. If someone is in danger or needs help, please connect them with a trusted adult, a counsellor, a doctor or local emergency services.</p>
+    <label class="f" for="pwho">Praying for (a first name, “a friend”, or a group)</label>
+    <input type="text" id="pwho" maxlength="80" placeholder="e.g. a friend, my neighbour, all young people">
+    <label class="f" for="pint">Intention (optional)</label>
+    <input type="text" id="pint" maxlength="200" placeholder="e.g. courage to ask for help">
+    <div class="grid" style="gap:10px">
+      <div><label class="f" for="ptype">I pledge</label><select id="ptype"><option value="rosary">A rosary decade</option><option value="mass">Holy Mass</option><option value="bible">Bible reading</option><option value="silent">Quiet prayer</option></select></div>
+      <div><label class="f" for="pdays">For</label><select id="pdays"><option value="7">7 days</option><option value="9">9 days (novena)</option><option value="30">30 days</option><option value="0">Ongoing</option></select></div>
+    </div>
+    <p style="margin:14px 0 0"><button class="btn" id="padd">🙏 Make my pledge</button></p>
+    <p class="hint" style="margin:8px 0 0">Pledges are saved only in this browser. Please avoid full names to protect privacy.</p>
+  </div>
+  <div class="card"><h2>My prayer pledges</h2><div id="psum"></div><div id="plist"></div></div>
+</section>
+<!-- VERSES FOR LIFE -->
+<section id="verses" hidden>
+  <div class="card">
+    <h2>Verses for Life’s Problems</h2>
+    <p class="hint" style="margin:0 0 10px">Facing something heavy? Search a problem, such as lonely, stress, money, lies or anger, and find Bible verses, comfort and one step to take.</p>
+    <input type="text" id="vq" placeholder="Search: anxiety, greed, bullying, burnout…" aria-label="Search problems">
+    <p class="warn">Scripture brings comfort and strength, but it does not replace professional help. If you are struggling with anxiety, depression, abuse or addiction, please also talk to a doctor, counsellor or trusted person.</p>
+  </div>
+  <div id="vlist"></div>
+  <div class="card" id="letter">
+    <h2>💌 A Thank-You Letter to God</h2>
+    <p class="hint" style="margin:0 0 8px">When your prayers and good works for the day are done, take a quiet moment. Breathe slowly, then write what you are thankful for. Gratitude can calm the mind and help you rest.</p>
+    <div id="bc" aria-live="polite">Ready</div>
+    <p style="text-align:center;margin:0 0 10px"><button class="btn" id="bstart">🌬 Start calming breaths</button></p>
+    <p class="hint" style="margin:6px 0">Tap a starter to begin your letter:</p>
+    <div class="issues" id="lprompts"></div>
+    <label class="f" for="ltxt">Dear Lord…</label>
+    <textarea id="ltxt" rows="8" placeholder="Dear Lord, thank You for this day…"></textarea>
+    <p style="margin:10px 0 0"><button class="btn" id="lsave">💌 Offer this letter</button></p>
+    <div class="bless" id="lcalm" hidden></div>
+    <h3 style="margin:16px 0 4px">My past letters</h3><div id="llist"></div>
+    <p class="hint">Letters are private and stay only on this device.</p>
+  </div>
+</section>
+</main>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs><g id="pp"><circle cy="-7" r="5" fill="#f0c9a0"/><path d="M-8 14Q-8 0 0 0Q8 0 8 14Z"/></g><g id="jf"><circle cy="-40" r="12" fill="none" stroke="#e8c14a" stroke-width="2.5"/><circle cy="-38" r="7" fill="#f0c9a0"/><path d="M-9 -26L-28 -8M9 -26L28 -8" stroke="#f7f9ff" stroke-width="6" stroke-linecap="round"/><path d="M-11 -29H11L19 32H-19Z" fill="#f7f9ff" stroke="#c8d0de"/><path d="M-11 -29H-3L-1 32H-19Z" fill="#2f6fd0"/></g></defs></svg>
+<div id="toast" role="status" aria-live="polite"></div><button class="btn" id="totop" aria-label="Back to top">↑ Top</button>
+<footer><span>Scripture text is shown in the King James Version (public domain). The NRSV-CE is copyrighted, so every verse carries a “Read in NRSV-CE” link to its Catholic edition text.</span><br>Small steps, done with love, change the world. 🕊</footer>
+
+<script>
+(function(){
+var VERSES=[
+["The LORD is my shepherd; I shall not want.","Psalm 23:1"],
+["I am the light of the world: he that followeth me shall not walk in darkness, but shall have the light of life.","John 8:12"],
+["I can do all things through Christ which strengtheneth me.","Philippians 4:13"],
+["Fear thou not; for I am with thee: be not dismayed; for I am thy God.","Isaiah 41:10"],
+["God is our refuge and strength, a very present help in trouble.","Psalm 46:1"],
+["And now abideth faith, hope, charity, these three; but the greatest of these is charity.","1 Corinthians 13:13"],
+["Thy word is a lamp unto my feet, and a light unto my path.","Psalm 119:105"],
+["Trust in the LORD with all thine heart; and lean not unto thine own understanding.","Proverbs 3:5"]
+];
+var ISSUES=[
+{n:"Hunger & poverty",e:"🍞",v:"For I was an hungred, and ye gave me meat: I was thirsty, and ye gave me drink.",r:"Matthew 25:35",
+ t:"Millions go to bed hungry while food is wasted elsewhere. Jesus teaches that serving the poor is serving Him.",
+ a:["Give a meal, or donate groceries to a food bank or parish pantry.","Waste less food today and share leftovers.","Greet and listen to someone who is struggling, without judgment."]},
+{n:"Loneliness",e:"🤝",v:"Lo, I am with you alway, even unto the end of the world.",r:"Matthew 28:20",
+ t:"Many are lonely: the elderly, the sick, new neighbours, the grieving. Jesus promises His presence, and we can be His presence to others.",
+ a:["Call or visit someone who is alone.","Invite a lonely person to sit with you at Mass or lunch.","Write a short, kind note to someone today."]},
+{n:"Bullying & cruelty",e:"💛",v:"And be ye kind one to another, tenderhearted, forgiving one another, even as God for Christ’s sake hath forgiven you.",r:"Ephesians 4:32",
+ t:"Words can wound deeply, in schools, workplaces and online. Jesus stood with the outcast and calls us to gentleness.",
+ a:["Stand beside someone being mocked, and say something kind.","Pause before posting or replying; choose words that heal.","Pray for the person who hurt you, and for the one they hurt."]},
+{n:"Injustice",e:"⚖️",v:"He hath shewed thee, O man, what is good; and what doth the LORD require of thee, but to do justly, and to love mercy, and to walk humbly with thy God?",r:"Micah 6:8",
+ t:"Unfair wages, discrimination and corruption hurt the vulnerable. Faith asks us to be honest, fair and brave in speaking for others.",
+ a:["Pay and treat workers fairly, and say thank you.","Refuse to join in gossip or dishonest shortcuts.","Learn about one justice issue in your community and support a group working on it."]},
+{n:"Fear & despair",e:"🌅",v:"Be strong and of a good courage; be not afraid, neither be thou dismayed: for the LORD thy God is with thee whithersoever thou goest.",r:"Joshua 1:9",
+ t:"Anxiety, depression and hopelessness affect so many. Courage does not mean having no fear; it means walking with God anyway.",
+ a:["Pray one decade of the rosary for those who feel hopeless.","Check in on a friend who has seemed down.","Encourage someone with a verse, and encourage them to seek help if they are struggling."]},
+{n:"Hatred & division",e:"🕊️",v:"A new commandment I give unto you, That ye love one another; as I have loved you.",r:"John 13:34",
+ t:"Religion, caste, politics and race can divide families and nations. Jesus crossed every boundary to love.",
+ a:["Speak respectfully with someone who thinks differently.","Reach out to someone from another community.","Forgive one grudge today, or at least begin to pray about it."]},
+{n:"Addiction & burdens",e:"🌿",v:"Come unto me, all ye that labour and are heavy laden, and I will give you rest.",r:"Matthew 11:28",
+ t:"Addiction to drink, drugs, screens or gambling breaks families. Recovery is hard, and no one should walk it alone.",
+ a:["Offer a listening ear, without shaming anyone.","Help someone find counselling or a support group.","Examine one habit of your own and bring it to prayer."]},
+{n:"Care for creation",e:"🌍",v:"The earth is the LORD’s, and the fulness thereof; the world, and they that dwell therein.",r:"Psalm 24:1",
+ t:"Pollution, plastic and climate change harm the poor first. Caring for creation is a way of thanking the Creator.",
+ a:["Plant a tree or tend a plant.","Carry a cloth bag and refuse single-use plastic today.","Pick up litter near your home or church."]}
+];
+var KEY="wwj.journal.v1",D={},sel=today(),view=new Date();view.setDate(1);
+function pad(n){return n<10?"0"+n:""+n}
+function ds(d){return d.getFullYear()+"-"+pad(d.getMonth()+1)+"-"+pad(d.getDate())}
+function today(){return ds(new Date())}
+function load(){try{var s=localStorage.getItem(KEY);if(s)D=JSON.parse(s)||{}}catch(e){D={}}}
+function save(){try{localStorage.setItem(KEY,JSON.stringify(D))}catch(e){}}
+function get(k){return D[k]||{r:0,b:false,m:false,k:0,e:0,n:"",p:""}}
+function set(k,o){D[k]=o;save();render()}
+function score(o){return (o.r>0?1:0)+(o.b?1:0)+(o.m?1:0)+(o.k>0?1:0)}
+function $(id){return document.getElementById(id)}
+function esc(s){return String(s).replace(/[&<>"]/g,function(c){return{"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]})}
+
+function renderCal(){
+  var y=view.getFullYear(),m=view.getMonth(),n=new Date(y,m+1,0).getDate(),T=today(),i,done=0,cx=180,R=148;
+  $("mlabel").textContent=view.toLocaleDateString(undefined,{month:"long",year:"numeric"});
+  var s='<svg viewBox="0 0 360 360" width="100%" style="max-width:420px;display:block;margin:0 auto" role="group" aria-label="Month ring calendar">';
+  var cols=["var(--rosary)","var(--bible)","var(--mass)","var(--kind)"];
+  for(i=1;i<=n;i++){
+    var k=y+"-"+pad(m+1)+"-"+pad(i),o=get(k),sc=score(o),a=(-90+(i-1)*360/n)*Math.PI/180,ca=Math.cos(a),sa=Math.sin(a);
+    var dots=[o.r>0,!!o.b,!!o.m,o.k>0],j;
+    if(sc)done++;
+    for(j=0;j<4;j++){
+      var rr=R-24-j*11;
+      s+='<circle cx="'+(cx+rr*ca).toFixed(1)+'" cy="'+(cx+rr*sa).toFixed(1)+'" r="3.3" fill="'+(dots[j]?cols[j]:"none")+'" stroke="'+(dots[j]?cols[j]:"var(--line)")+'"/>';
+    }
+    var fill=sc>=4?"var(--gold)":sc>=3?"var(--accent)":sc>=1?"#bcd3f3":"var(--line)";
+    var txt=sc>=4||(sc>=1&&sc<3)?"#11284b":sc>=3?"#fff":"var(--ink)";
+    var st=k===sel?' stroke="var(--gold)" stroke-width="3"':k===T?' stroke="var(--ink)" stroke-width="2"':"";
+    var bx=(cx+R*ca).toFixed(1),by=(cx+R*sa).toFixed(1);
+    s+='<g data-k="'+k+'" role="button" tabindex="0" aria-label="'+k+', '+sc+' of 4 done" style="cursor:pointer"><circle cx="'+bx+'" cy="'+by+'" r="12.5" fill="'+fill+'"'+st+'/><text x="'+bx+'" y="'+by+'" text-anchor="middle" dominant-baseline="central" font-size="11" font-family="Georgia,serif" fill="'+txt+'">'+i+'</text></g>';
+  }
+  s+='<circle cx="180" cy="180" r="84" fill="none" stroke="var(--gold)" stroke-width="2"/>';
+  s+='<path d="M180 118V188M156 142H204" stroke="var(--gold)" stroke-width="4" stroke-linecap="round" fill="none"/>';
+  s+='<text x="180" y="214" text-anchor="middle" font-size="16" font-weight="bold" fill="var(--ink)">'+done+' of '+n+'</text><text x="180" y="232" text-anchor="middle" font-size="11" fill="var(--mute)">days with Jesus</text></svg>';
+  $("cal").innerHTML=s;renderTrack();
+}
+function bars(id,field,color,label){
+  var w=560,hh=150,pl=24,n=14,vals=[],labs=[],d=new Date(),i,max=1;
+  for(i=n-1;i>=0;i--){var x=new Date(d.getFullYear(),d.getMonth(),d.getDate()-i);vals.push(get(ds(x))[field]||0);labs.push(x.getDate())}
+  vals.forEach(function(v){if(v>max)max=v});
+  var bw=(w-pl)/n,s='<svg viewBox="0 0 '+w+' '+(hh+24)+'" width="100%" style="min-width:420px" role="img" aria-label="'+label+'">';
+  s+='<line x1="'+pl+'" y1="'+hh+'" x2="'+w+'" y2="'+hh+'" stroke="var(--line)"/>';
+  s+='<text x="0" y="12" font-size="11" fill="var(--mute)">'+max+'</text>';
+  vals.forEach(function(v,j){
+    var bh=v/max*(hh-20),x=pl+j*bw+4;
+    s+='<rect x="'+x+'" y="'+(hh-bh)+'" width="'+(bw-8)+'" height="'+bh+'" rx="4" fill="'+color+'"><title>'+v+'</title></rect>';
+    if(v)s+='<text x="'+(x+(bw-8)/2)+'" y="'+(hh-bh-4)+'" font-size="11" text-anchor="middle" fill="var(--ink)">'+v+'</text>';
+    s+='<text x="'+(x+(bw-8)/2)+'" y="'+(hh+15)+'" font-size="10" text-anchor="middle" fill="var(--mute)">'+labs[j]+'</text>';
+  });
+  $(id).innerHTML=s+"</svg>";
+}
+function streak(){var c=0,d=new Date();if(score(get(ds(d)))===0)d.setDate(d.getDate()-1);
+  while(score(get(ds(d)))>0){c++;d.setDate(d.getDate()-1)}return c}
+function renderStats(){
+  var R=0,B=0,M=0,K=0;
+  Object.keys(D).forEach(function(k){var o=D[k];R+=o.r||0;B+=o.b?1:0;M+=o.m?1:0;K+=o.k||0});
+  var st=[["Day streak 🔥",streak(),"var(--accent)"],["Rosary count",R,"var(--rosary)"],["Days read Bible",B,"var(--bible)"],["Holy Masses",M,"var(--mass)"],["Kind acts",K,"var(--kind)"]];
+  $("stats").innerHTML=st.map(function(x){return '<div class="stat"><b style="color:'+x[2]+'">'+x[1]+'</b>'+x[0]+'</div>'}).join("");
+}
+function render(){
+  var o=get(sel);
+  $("selLabel").textContent=sel===today()?"Today":new Date(sel+"T12:00:00").toLocaleDateString(undefined,{weekday:"short",day:"numeric",month:"short"});
+  if(document.activeElement!==$("rn"))$("rn").value=o.r;if(document.activeElement!==$("vn"))$("vn").value=Math.max(o.v||0,0);$("kn").textContent=o.k;
+  var b=$("bt"),m=$("mt");
+  b.classList.toggle("on",o.b);b.textContent=o.b?"✓ Read":"Mark read";
+  m.classList.toggle("on",o.m);m.textContent=o.m?"✓ Attended":"Mark attended";
+  if(document.activeElement!==$("note"))$("note").value=o.n||"";
+  if(document.activeElement!==$("ref"))$("ref").value=o.p||"";
+  renderCal();renderStats();renderMeter();
+  bars("gk","k","var(--kind)","Kindness acts per day");
+  bars("gr","r","var(--rosary)","Rosary count per day");
+}
+function upd(f){var o=Object.assign({},get(sel));f(o);set(sel,o)}
+$("rp").onclick=function(){upd(function(o){o.r=Math.min(9999,o.r+10)})};
+$("rn").oninput=function(){var o=Object.assign({},get(sel));o.r=Math.max(0,Math.min(9999,parseInt(this.value,10)||0));D[sel]=o;save();render()};
+$("vn").oninput=function(){var o=Object.assign({},get(sel)),n=Math.max(0,Math.min(999,parseInt(this.value,10)||0));o.v=n;if(n>0)o.b=true;D[sel]=o;save();render()};
+$("rm").onclick=function(){upd(function(o){o.r=Math.max(0,o.r-10)})};
+$("kp").onclick=function(){upd(function(o){o.k++})};
+$("km").onclick=function(){upd(function(o){o.k=Math.max(0,o.k-1)})};
+$("bt").onclick=function(){upd(function(o){o.b=!o.b;if(!o.b)o.v=0})};
+$("mt").onclick=function(){upd(function(o){o.m=!o.m})};
+$("note").oninput=function(){var o=Object.assign({},get(sel));o.n=this.value;D[sel]=o;save()};
+$("ref").oninput=function(){var o=Object.assign({},get(sel));o.p=this.value;D[sel]=o;save()};
+$("note").onblur=$("ref").onblur=render;
+$("pm").onclick=function(){view.setMonth(view.getMonth()-1);renderCal()};
+$("nm").onclick=function(){view.setMonth(view.getMonth()+1);renderCal()};
+$("cal").onclick=function(e){var t=e.target.closest("[data-k]");if(t){sel=t.dataset.k;render()}};
+
+// Daily verse
+var dn=Math.floor(Date.now()/864e5),dv=VERSES[dn%VERSES.length];
+$("dv").innerHTML=esc("“"+dv[0]+"”")+"<small>"+esc(dv[1])+vref(dv[1])+"</small>";
+
+// Tabs
+function tab(n){
+  ["journey","light","pray","verses"].forEach(function(x){$(x).hidden=x!==n;$("t-"+x.charAt(0)).setAttribute("aria-selected",x===n)});
+  window.scrollTo(0,0);
+}
+document.querySelector(".tabs").onclick=function(e){var b=e.target.closest("button");if(b)tab(b.dataset.tab)};
+
+// Issues
+var cur=0;
+function renderIssues(){
+  $("issues").innerHTML=ISSUES.map(function(x,i){return '<button data-i="'+i+'" aria-pressed="'+(i===cur)+'">'+x.e+" "+esc(x.n)+"</button>"}).join("");
+  var x=ISSUES[cur];
+  $("issueCard").innerHTML='<h2>'+x.e+" "+esc(x.n)+'</h2>'+ART(cur)+'<div class="verse">“'+esc(x.v)+'”<small>'+esc(x.r)+vref(x.r)+'</small></div>'+
+   '<h3 style="margin:14px 0 4px">Reflect</h3><p style="margin:0">'+esc(x.t)+'</p>'+
+   '<h3 style="margin:14px 0 4px">Take courage, take action</h3><ul class="acts">'+x.a.map(function(a){return "<li>"+esc(a)+"</li>"}).join("")+'</ul>'+
+   '<button class="btn" id="did">✓ I did this today (+1 kindness)</button> <span class="hint" id="didm"></span>';
+  $("did").onclick=function(){var k=today(),o=Object.assign({},get(k));o.k++;D[k]=o;save();render();$("didm").textContent="Thank you! Kindness today: "+o.k};
+}
+$("issues").onclick=function(e){var b=e.target.closest("button");if(b){cur=+b.dataset.i;renderIssues()}};
+
+// Prayer pledges
+var PK="wwj.pledges.v1",P=[],pc=0;
+var PT={rosary:"Rosary decade",mass:"Holy Mass",bible:"Bible reading",silent:"Quiet prayer"};
+var PC=[
+{n:"Drugs & addiction",e:"🌿",c:"#2e9e8f",s:1,v:"He healeth the broken in heart, and bindeth up their wounds.",r:"Psalm 147:3",p:"Lord Jesus, healer of the broken, free those chained by addiction. Give them courage to ask for help, and give their families patience and hope."},
+{n:"Harassment & bullying",e:"🛡️",c:"#d9822b",s:1,v:"The LORD also will be a refuge for the oppressed, a refuge in times of trouble.",r:"Psalm 9:9",p:"Lord, protect those who are mocked, threatened or harassed. Give them courage to speak, and change the hearts of those who cause harm."},
+{n:"Abuse & violence",e:"🕯️",c:"#c0392b",s:1,v:"Defend the poor and fatherless: do justice to the afflicted and needy.",r:"Psalm 82:3",p:"Jesus, refuge of the oppressed, shield every person suffering violence or abuse. Lead them to safety and heal what has been hurt."},
+{n:"Sick & suffering",e:"💊",c:"#3f7fcf",v:"The prayer of faith shall save the sick, and the Lord shall raise him up.",r:"James 5:15",p:"Lord, be near the sick and those who care for them. Give strength to the weary and peace to the frightened."},
+{n:"Grief & loss",e:"🤍",c:"#7d6bb0",v:"Blessed are they that mourn: for they shall be comforted.",r:"Matthew 5:4",p:"Jesus, You wept at a friend’s grave. Comfort all who mourn, and hold them in Your love."},
+{n:"Poor & homeless",e:"🍞",c:"#a0702d",v:"Blessed is he that considereth the poor: the LORD will deliver him in time of trouble.",r:"Psalm 41:1",p:"Lord, You had nowhere to lay Your head. Provide food, shelter and dignity for the poor, and open our hands to help."},
+{n:"Broken families",e:"🏠",c:"#c25a8a",v:"God setteth the solitary in families.",r:"Psalm 68:6",p:"Prince of Peace, heal broken families. Soften hardened hearts, teach forgiveness and bring reconciliation."},
+{n:"Peace in the world",e:"🕊️",c:"#3fa66b",v:"Blessed are the peacemakers: for they shall be called the children of God.",r:"Matthew 5:9",p:"Lord Jesus, make us peacemakers. End hatred and war, and let Your peace begin in us."}
+];
+function pload(){try{var s=localStorage.getItem(PK);if(s)P=JSON.parse(s)||[]}catch(e){P=[]}}
+function psave(){try{localStorage.setItem(PK,JSON.stringify(P))}catch(e){}}
+function renderP(){
+  $("pcats").innerHTML=PC.map(function(x,i){return '<button data-i="'+i+'" aria-pressed="'+(i===pc)+'">'+x.e+" "+esc(x.n)+"</button>"}).join("");
+  var x=PC[pc],T=today();
+  $("pverse").style.borderLeftColor=x.c;
+  $("pverse").innerHTML="“"+esc(x.v)+"”<small>"+esc(x.r)+vref(x.r)+"</small>";
+  $("pprayer").textContent=x.p;
+  $("pnote").hidden=!x.s;
+  var chips="";
+  PC.forEach(function(c,i){
+    var l=P.filter(function(q){return q.c===i});if(!l.length)return;
+    var n=l.reduce(function(a,q){return a+q.n},0);
+    chips+='<span class="chip" style="border-color:'+c.c+'">'+c.e+" "+esc(c.n)+": "+l.length+" pledge"+(l.length===1?"":"s")+" · "+n+" prayed</span>";
+  });
+  $("psum").innerHTML=chips;
+  $("plist").innerHTML=P.length?P.map(function(q){
+    var c=PC[q.c]||PC[0],done=q.l===T,full=q.g>0&&q.n>=q.g;
+    var prog=q.g>0?q.n+" of "+q.g+" days":q.n+" days prayed";
+    return '<div class="pl" style="border-left-color:'+c.c+'"><div class="top"><div><b>'+c.e+" For "+esc(q.w)+'</b><div class="hint">'+esc(c.n)+" · "+PT[q.t]+" · "+prog+(full?" · 🎉 Pledge fulfilled":"")+'</div>'+(q.i?'<div style="margin-top:4px">'+esc(q.i)+"</div>":"")+'</div><button class="btn" data-a="x" data-id="'+q.id+'" aria-label="Remove pledge">×</button></div><p style="margin:10px 0 0"><button class="btn'+(done?" on":"")+'" data-a="p" data-id="'+q.id+'" style="'+(done?"background:"+c.c+";color:#fff;border-color:"+c.c:"")+'">'+(done?"✓ Prayed today":"🙏 I prayed today")+"</button></p>"+blessHtml(q,full)+"</div>";
+  }).join(""):'<p class="hint">No pledges yet. Choose a need above and make your first pledge.</p>';
+}
+$("pcats").onclick=function(e){var b=e.target.closest("button");if(b){pc=+b.dataset.i;renderP()}};
+$("padd").onclick=function(){
+  var w=$("pwho").value.trim();if(!w){$("pwho").focus();return}
+  P.unshift({id:Date.now(),c:pc,w:w.slice(0,80),i:$("pint").value.trim().slice(0,200),t:$("ptype").value,g:+$("pdays").value,n:0,l:""});
+  psave();$("pwho").value="";$("pint").value="";renderP();
+};
+$("plist").onclick=function(e){
+  var b=e.target.closest("button");if(!b)return;
+  var id=+b.dataset.id,q=P.filter(function(z){return z.id===id})[0];if(!q)return;
+  if(b.dataset.a==="x"){P=P.filter(function(z){return z.id!==id})}
+  else if(q.l!==today()){
+    q.n++;q.l=today();pledgeToast(q);
+    var k=today(),o=Object.assign({},get(k));
+    if(q.t==="rosary")o.r=Math.min(9999,o.r+10);
+    if(q.t==="mass")o.m=true;
+    if(q.t==="bible"){o.b=true;o.v=(o.v||0)+1}
+    D[k]=o;save();render();
+  }
+  psave();renderP();
+};
+
+// Verses for life
+var PRB=[
+{n:"Loneliness",e:"🤝",k:"alone isolation lonely friends",t:"Loneliness can come from distance, loss or feeling unseen. Scripture says you are never truly alone.",a:"Reach out to one person today by call, message or visit, and invite someone else who is alone.",v:[["God setteth the solitary in families.","Psalm 68:6"],["The LORD thy God, he it is that doth go with thee; he will not fail thee, nor forsake thee.","Deuteronomy 31:6"]]},
+{n:"Anxiety & worry",e:"🌤️",k:"stress fear panic nervous overthinking",t:"Worry can steal sleep and joy. Jesus invites us to bring our fears to God, one at a time.",a:"Write down what worries you and pray over each one. If anxiety feels overwhelming, see a doctor or counsellor too.",v:[["Be careful for nothing; but in every thing by prayer and supplication with thanksgiving let your requests be made known unto God.","Philippians 4:6"],["Casting all your care upon him; for he careth for you.","1 Peter 5:7"]]},
+{n:"Environmental degradation",e:"🌍",k:"nature pollution climate plastic earth waste trees",t:"The earth is God’s gift. Pollution, waste and deforestation harm creation and the poor who depend on it.",a:"Choose one habit to change this week: less plastic, less waste, or planting something.",v:[["And the LORD God took the man, and put him into the garden of Eden to dress it and to keep it.","Genesis 2:15"],["O LORD, how manifold are thy works! in wisdom hast thou made them all: the earth is full of thy riches.","Psalm 104:24"]]},
+{n:"Materialism",e:"🛍️",k:"money possessions shopping status consumer things",t:"Chasing possessions and status can crowd out God and people. Jesus points us to lasting treasure.",a:"Give away one thing you do not need, and spend that time on someone you love.",v:[["Lay not up for yourselves treasures upon earth, where moth and rust doth corrupt, and where thieves break through and steal.","Matthew 6:19"],["Take heed, and beware of covetousness: for a man’s life consisteth not in the abundance of the things which he possesseth.","Luke 12:15"]]},
+{n:"Greed",e:"💰",k:"money selfish covetous wealth hoarding",t:"Greed always wants more and forgets those in need. Contentment and generosity are its cure.",a:"Share some money, food or time with someone in need this week.",v:[["For the love of money is the root of all evil.","1 Timothy 6:10"],["Let your conversation be without covetousness; and be content with such things as ye have.","Hebrews 13:5"]]},
+{n:"Dishonesty",e:"🗝️",k:"lies lying cheating truth deceit fraud",t:"Small lies, cheating and false promises break trust. Truth builds peace.",a:"Speak the truth gently today, and admit one mistake you have been hiding.",v:[["Lying lips are abomination to the LORD: but they that deal truly are his delight.","Proverbs 12:22"],["Wherefore putting away lying, speak every man truth with his neighbour: for we are members one of another.","Ephesians 4:25"]]},
+{n:"Corruption",e:"⚖️",k:"bribe bribery fraud power integrity government",t:"Bribes and abuse of power hurt ordinary people. Integrity matters even when no one is watching.",a:"Refuse a dishonest shortcut, and support honest, fair practice where you work.",v:[["And thou shalt take no gift: for the gift blindeth the wise, and perverteth the words of the righteous.","Exodus 23:8"],["The integrity of the upright shall guide them: but the perverseness of transgressors shall destroy them.","Proverbs 11:3"]]},
+{n:"Prejudice & discrimination",e:"🌈",k:"racism caste religion bias hate gender judging",t:"Judging people by caste, race, religion, gender or status denies that all are made in God’s image.",a:"Sit and talk with someone from a different background, and listen to their story.",v:[["There is neither Jew nor Greek, there is neither bond nor free, there is neither male nor female: for ye are all one in Christ Jesus.","Galatians 3:28"],["Of a truth I perceive that God is no respecter of persons.","Acts 10:34"]]},
+{n:"Work overload & burnout",e:"⏳",k:"stress tired busy exhausted job rest overwork",t:"Constant busyness leaves no room for rest, family or prayer. Even Jesus withdrew to rest.",a:"Set one clear stopping time today and keep a short quiet time with God.",v:[["It is vain for you to rise up early, to sit up late, to eat the bread of sorrows: for so he giveth his beloved sleep.","Psalm 127:2"],["Come ye yourselves apart into a desert place, and rest a while.","Mark 6:31"]]},
+{n:"Toxic people & gossip",e:"🚧",k:"toxicity toxic negativity gossip relationships boundaries",t:"Gossip, constant negativity and harmful relationships drain the soul. Love sometimes needs healthy boundaries.",a:"Step away from one toxic habit or conversation, and spend time with people who build you up. If you are being harmed, seek help.",v:[["Be not deceived: evil communications corrupt good manners.","1 Corinthians 15:33"],["Make no friendship with an angry man; and with a furious man thou shalt not go: lest thou learn his ways, and get a snare to thy soul.","Proverbs 22:24–25"]]},
+{n:"Bullying",e:"💛",k:"harassment mocking cyberbullying cruelty teasing online",t:"Mockery and cruelty, in person or online, wound deeply. Jesus defends the weak and teaches us to answer evil with good.",a:"Stand with someone being targeted, and speak kindly. If you are being bullied, tell a trusted adult.",v:[["A soft answer turneth away wrath: but grievous words stir up anger.","Proverbs 15:1"],["Love your enemies, bless them that curse you, do good to them that hate you, and pray for them which despitefully use you, and persecute you.","Matthew 5:44"]]},
+{n:"Anger & resentment",e:"🔥",k:"rage grudge forgiveness revenge bitter",t:"Unforgiven hurt turns into bitterness. Jesus calls us to forgive, as we have been forgiven.",a:"Name the hurt, pray for the person, and take one step toward forgiveness or peace.",v:[["Be ye angry, and sin not: let not the sun go down upon your wrath.","Ephesians 4:26"],["Forbearing one another, and forgiving one another, if any man have a quarrel against any: even as Christ forgave you, so also do ye.","Colossians 3:13"]]},
+{n:"Addiction",e:"🌿",k:"drugs alcohol drink smoking phone gambling temptation",t:"Addiction binds people and hurts families. Freedom is possible, and no one has to fight alone.",a:"Tell one trusted person and seek support; recovery is easier together.",v:[["God is faithful, who will not suffer you to be tempted above that ye are able.","1 Corinthians 10:13"],["Stand fast therefore in the liberty wherewith Christ hath made us free, and be not entangled again with the yoke of bondage.","Galatians 5:1"]]},
+{n:"Grief & hopelessness",e:"🕊️",k:"sadness depression loss death despair mourning",t:"Loss and despair can make the world look dark. God is close to the brokenhearted.",a:"Let yourself grieve, lean on others, and pray even one sentence. Seek professional help if the darkness does not lift.",v:[["The LORD is nigh unto them that are of a broken heart; and saveth such as be of a contrite spirit.","Psalm 34:18"],["Now the God of hope fill you with all joy and peace in believing, that ye may abound in hope.","Romans 15:13"]]},
+{n:"Envy & low self-worth",e:"🪞",k:"comparison jealousy social media insecurity confidence",t:"Comparing yourself with others, especially online, can make you feel small. God made you with purpose.",a:"Thank God for three of your own gifts, and congratulate someone on their success.",v:[["A sound heart is the life of the flesh: but envy the rottenness of the bones.","Proverbs 14:30"],["I will praise thee; for I am fearfully and wonderfully made.","Psalm 139:14"]]}
+];
+function renderV(){
+  var q=$("vq").value.trim().toLowerCase();
+  var L=PRB.filter(function(x){return !q||(x.n+" "+x.k).toLowerCase().indexOf(q)>-1});
+  $("vlist").innerHTML=L.length?L.map(function(x){
+    return '<details class="pr"'+(q&&L.length<=2?" open":"")+'><summary>'+x.e+" "+esc(x.n)+'</summary><p style="margin:8px 0">'+esc(x.t)+'</p>'+x.v.map(function(y){return '<div class="verse" style="margin:8px 0">“'+esc(y[0])+'”<small>'+esc(y[1])+vref(y[1])+'</small></div>'}).join("")+'<p style="margin:8px 0"><b>Take a step:</b> '+esc(x.a)+'</p><button class="btn" data-i="'+PRB.indexOf(x)+'">📖 I read this today</button></details>';
+  }).join(""):'<p class="hint">No match. Try another word, such as stress, lies, money or anger.</p>';
+}
+$("vq").oninput=renderV;
+$("vlist").onclick=function(e){
+  var b=e.target.closest("button");if(!b)return;
+  var x=PRB[+b.dataset.i],k=today(),o=Object.assign({},get(k));
+  o.b=true;o.v=(o.v||0)+x.v.length;if(!o.p)o.p=x.v.map(function(y){return y[1]}).join("; ");
+  D[k]=o;save();render();b.textContent="✓ Added to today’s journal";
+};
+
+// Monthly tracker
+var GK="wwj.goals.v1",G={r:100,v:10,k:3};
+var COL={miss:"#f0c4c1",r:"#d9534f",o:"#f0a030",g:"#3fa66b",gg:"#1e7a46",n:"var(--line)"};
+function gload(){try{var s=JSON.parse(localStorage.getItem(GK));if(s)G=Object.assign(G,s)}catch(e){}}
+function gsave(){try{localStorage.setItem(GK,JSON.stringify(G))}catch(e){}}
+function shade(c,val,goal,past,dow){
+  if(c==="m"){if(val>0)return COL.g;return(past&&dow===0)?COL.r:COL.n}
+  if(val<=0)return past?COL.miss:COL.n;
+  var p=val/goal;
+  if(p>=1.5)return COL.gg;if(p>=1)return COL.g;if(p>=.5)return COL.o;return COL.r;
+}
+function renderTrack(){
+  var y=view.getFullYear(),m=view.getMonth(),n=new Date(y,m+1,0).getDate(),T=today(),i;
+  $("tlabel").textContent=view.toLocaleDateString(undefined,{month:"long",year:"numeric"});
+  var cols="grid-template-columns:118px repeat("+n+",16px) 52px";
+  var h='<div class="tr" style="'+cols+'"><span class="lab"></span>';
+  for(i=1;i<=n;i++)h+='<span class="dn">'+i+"</span>";
+  h+="<span></span></div>";
+  [["r","Rosary count","var(--rosary)"],["v","Bible verses","var(--bible)"],["k","Great works","var(--kind)"],["m","Holy Mass","var(--mass)"]].forEach(function(rw){
+    var c=rw[0],goal=c==="m"?1:(G[c]>0?G[c]:1),met=0;
+    h+='<div class="tr" style="'+cols+'"><span class="lab"><i class="dot" style="background:'+rw[2]+'"></i>'+rw[1]+"</span>";
+    for(i=1;i<=n;i++){
+      var k=y+"-"+pad(m+1)+"-"+pad(i),o=get(k);
+      var val=c==="r"?(o.r||0):c==="v"?Math.max(o.v||0,o.b?1:0):c==="k"?(o.k||0):(o.m?1:0);
+      if(val>=goal)met++;
+      var tip=rw[1]+", "+k+": "+val+(c==="m"?"":" of "+goal);
+      h+='<button class="tb'+(k===sel?" sel":"")+(k===T?" td":"")+'" data-k="'+k+'" style="background:'+shade(c,val,goal,k<T,new Date(y,m,i).getDay())+'" title="'+tip+'" aria-label="'+tip+'"></button>';
+    }
+    h+='<span class="hint" style="font-size:.75rem">'+met+" ✓</span></div>";
+  });
+  $("tgrid").innerHTML=h;
+}
+$("tgrid").onclick=function(e){var t=e.target.closest("[data-k]");if(t){sel=t.dataset.k;render();$("selLabel").scrollIntoView({block:"center",behavior:"smooth"})}};
+$("tpm").onclick=function(){view.setMonth(view.getMonth()-1);renderCal()};
+$("tnm").onclick=function(){view.setMonth(view.getMonth()+1);renderCal()};
+[["goalR","r"],["goalV","v"],["goalK","k"]].forEach(function(g){$(g[0]).oninput=function(){G[g[1]]=Math.max(1,parseInt(this.value,10)||1);gsave();renderTrack()}});
+
+// Speciality of the day
+var FEAST={"1-1":"Mary, Mother of God","1-3":"St Kuriakose Elias Chavara","1-14":"St Devasahayam","1-25":"Conversion of St Paul","1-28":"St Thomas Aquinas","1-31":"St John Bosco","2-2":"Presentation of the Lord","2-11":"Our Lady of Lourdes","2-22":"Chair of St Peter","3-17":"St Patrick","3-19":"St Joseph, Husband of Mary","3-25":"Annunciation of the Lord","4-25":"St Mark","4-29":"St Catherine of Siena","5-1":"St Joseph the Worker","5-13":"Our Lady of Fatima","5-31":"Visitation of Mary","6-8":"St Mariam Thresia","6-13":"St Anthony of Padua","6-24":"Birth of St John the Baptist","6-29":"Sts Peter and Paul","7-3":"St Thomas the Apostle (Dukrana)","7-11":"St Benedict","7-16":"Our Lady of Mount Carmel","7-22":"St Mary Magdalene","7-25":"St James","7-26":"Sts Joachim and Anne","7-28":"St Alphonsa","7-31":"St Ignatius of Loyola","8-4":"St John Vianney","8-6":"Transfiguration of the Lord","8-10":"St Lawrence","8-14":"St Maximilian Kolbe","8-15":"Assumption of Mary","8-22":"Queenship of Mary","8-24":"St Bartholomew","8-28":"St Augustine","8-29":"St Euphrasia","9-5":"St Teresa of Calcutta","9-8":"Nativity of Mary","9-14":"Exaltation of the Holy Cross","9-15":"Our Lady of Sorrows","9-21":"St Matthew","9-29":"Archangels Michael, Gabriel and Raphael","9-30":"St Jerome","10-1":"St Thérèse of Lisieux","10-2":"Holy Guardian Angels","10-4":"St Francis of Assisi","10-7":"Our Lady of the Rosary","10-15":"St Teresa of Avila","10-18":"St Luke","10-28":"Sts Simon and Jude","11-1":"All Saints","11-2":"All Souls: pray for the faithful departed","11-11":"St Martin of Tours","11-30":"St Andrew","12-3":"St Francis Xavier","12-6":"St Nicholas","12-8":"Immaculate Conception","12-12":"Our Lady of Guadalupe","12-25":"Christmas: the birth of Jesus","12-26":"St Stephen","12-27":"St John","12-28":"Holy Innocents"};
+var DEVO=["The Lord’s Day: the Resurrection and the Holy Trinity","The Holy Spirit and the souls in purgatory","The Guardian Angels and Our Lady of Perpetual Help","St Joseph, patron of workers and families","The Holy Eucharist and priests","The Passion and the Sacred Heart of Jesus","The Blessed Virgin Mary"];
+var MYS={J:["Joyful Mysteries","Annunciation · Visitation · Nativity · Presentation · Finding in the Temple"],L:["Luminous Mysteries","Baptism of Jesus · Wedding at Cana · Proclamation of the Kingdom · Transfiguration · Institution of the Eucharist"],S:["Sorrowful Mysteries","Agony in the Garden · Scourging · Crowning with Thorns · Carrying of the Cross · Crucifixion"],G:["Glorious Mysteries","Resurrection · Ascension · Descent of the Holy Spirit · Assumption · Coronation of Mary"]};
+var DM=["G","J","S","G","L","S","J"];
+var ACTS=["Attend Mass and greet three people warmly.","Pray for someone who is struggling, and do one unseen kindness.","Forgive one small hurt today.","Help someone with their work without being asked.","Spend ten quiet minutes in prayer or adoration.","Give up one comfort and share the saving with the poor.","Call or visit someone who is lonely."];
+function easter(y){var a=y%19,b=Math.floor(y/100),c=y%100,d=Math.floor(b/4),e=b%4,f=Math.floor((b+8)/25),g=Math.floor((b-f+1)/3),h=(19*a+b-d-g+15)%30,i=Math.floor(c/4),k=c%4,l=(32+2*e+2*i-h-k)%7,m=Math.floor((a+11*h+22*l)/451),q=h+l-7*m+114;return new Date(y,Math.floor(q/31)-1,q%31+1)}
+function movable(d){
+  var y=d.getFullYear(),t=new Date(y,d.getMonth(),d.getDate()).getTime(),off=Math.round((t-easter(y).getTime())/864e5);
+  var M={"-46":"Ash Wednesday","-7":"Palm Sunday","-3":"Holy Thursday","-2":"Good Friday","-1":"Holy Saturday","0":"Easter Sunday: Christ is risen!","7":"Divine Mercy Sunday","39":"Ascension of the Lord","49":"Pentecost Sunday","56":"The Most Holy Trinity","63":"Corpus Christi"};
+  if(M[off])return M[off];
+  var dw=new Date(y,10,30).getDay(),adv=new Date(y,10,dw<=3?30-dw:37-dw).getTime(),dd=Math.round((t-adv)/864e5);
+  return({"-7":"Christ the King","0":"First Sunday of Advent","7":"Second Sunday of Advent","14":"Third Sunday of Advent","21":"Fourth Sunday of Advent"})[dd]||"";
+}
+function renderSpec(){
+  var d=new Date(),dw=d.getDay(),f=[movable(d),FEAST[(d.getMonth()+1)+"-"+d.getDate()]].filter(Boolean);
+  $("sdate").textContent=d.toLocaleDateString(undefined,{weekday:"long",day:"numeric",month:"long",year:"numeric"});
+  $("sfeast").textContent=f.length?f.join(" · "):"An ordinary day in the Church’s year. Every day is holy.";
+  $("sdev").textContent=DEVO[dw];
+  $("smt").textContent="Rosary: "+MYS[DM[dw]][0];
+  $("smys").textContent=MYS[DM[dw]][1];
+  $("sact").textContent=ACTS[dw];
+}
+$("sdo").onclick=function(){var k=today(),o=Object.assign({},get(k));o.k++;D[k]=o;save();render();this.textContent="✓ Done, thank you!"};
+$("cal").onkeydown=function(e){if(e.key==="Enter"||e.key===" "){var t=e.target.closest("[data-k]");if(t){e.preventDefault();sel=t.dataset.k;render()}}};
+
+// ===== v2 additions =====
+function toast(m){var t=$("toast");t.textContent=m;t.classList.add("on");clearTimeout(toast.h);toast.h=setTimeout(function(){t.classList.remove("on")},3000)}
+function vref(r){return " · KJV · <a href=\"https://www.biblegateway.com/passage/?search="+encodeURIComponent(String(r).replace(/–/g,"-"))+"&amp;version=NRSVCE\" target=\"_blank\" rel=\"noopener\">Read in NRSV-CE ↗</a>"}
+
+// ---- Be the Light pictures (Gospel scenes) ----
+var PAL=["#c25a8a","#2f7fd6","#d9822b","#7b5cc4","#2e9e6a","#b05050","#8a6a3a"];
+function JJ(x,y,s){return '<use href="#jf" transform="translate('+x+' '+y+') scale('+s+')"/>'}
+function PP(x,y,c,s,r){return '<use href="#pp" fill="'+c+'" transform="translate('+x+' '+y+') rotate('+(r||0)+') scale('+(s||1.3)+')"/>'}
+function crowd(x0,x1,y,s){var h="",i=0,x;for(x=x0;x<=x1;x+=17,i++)h+=PP(x,y+(i%2)*3,PAL[i%7],s||1.25);return h}
+function house(x,y){return '<rect x="'+x+'" y="'+y+'" width="44" height="30" fill="#f1e2c4" stroke="#b99a6a"/><path d="M'+(x-6)+' '+y+'L'+(x+22)+' '+(y-20)+'L'+(x+50)+' '+y+'Z" fill="#b5654a"/><rect x="'+(x+17)+'" y="'+(y+12)+'" width="10" height="18" fill="#7a5230"/>'}
+var SCN=[
+{c:"Jesus feeds the five thousand with five loaves and two fish (John 6:1–13).",a:"Jesus multiplying loaves and fish for a hungry crowd",
+ s:'<defs><linearGradient id="sk" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#ffe9b0"/><stop offset="1" stop-color="#bfe3ff"/></linearGradient></defs><rect width="400" height="200" fill="url(#sk)"/><circle cx="340" cy="38" r="20" fill="#ffd36b"/><path d="M0 140Q100 112 200 134T400 126V200H0Z" fill="#7fc17b"/>'+crowd(24,150,150)+crowd(250,376,150)+crowd(36,140,170,1.3)+crowd(262,364,170,1.3)+JJ(200,106,1.15)+'<ellipse cx="200" cy="154" rx="38" ry="11" fill="#a06a2c"/><ellipse cx="184" cy="146" rx="10" ry="5" fill="#e2a85a" stroke="#b57a2a"/><ellipse cx="200" cy="144" rx="10" ry="5" fill="#e2a85a" stroke="#b57a2a"/><ellipse cx="216" cy="146" rx="10" ry="5" fill="#e2a85a" stroke="#b57a2a"/><ellipse cx="192" cy="150" rx="9" ry="4" fill="#f0bd70" stroke="#b57a2a"/><ellipse cx="209" cy="150" rx="9" ry="4" fill="#f0bd70" stroke="#b57a2a"/><ellipse cx="168" cy="156" rx="9" ry="3.5" fill="#7fa7c9"/><path d="M176 156l7-5v10z" fill="#7fa7c9"/><ellipse cx="232" cy="156" rx="9" ry="3.5" fill="#7fa7c9"/><path d="M224 156l-7-5v10z" fill="#7fa7c9"/><ellipse cx="86" cy="190" rx="15" ry="6" fill="#a06a2c"/><ellipse cx="314" cy="190" rx="15" ry="6" fill="#a06a2c"/>'},
+{c:"The risen Jesus walks beside two lonely travellers on the road to Emmaus (Luke 24:13–35).",a:"Jesus walking with two disciples at sunset",
+ s:'<defs><linearGradient id="sk" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#ffc58a"/><stop offset="1" stop-color="#f3e4ff"/></linearGradient></defs><rect width="400" height="200" fill="url(#sk)"/><circle cx="318" cy="96" r="28" fill="#ffb347"/><path d="M0 138Q120 108 240 130T400 120V200H0Z" fill="#8fb872"/><path d="M110 200L184 134H222L330 200Z" fill="#dcbf90"/>'+house(336,112)+PP(160,150,"#2f7fd6",1.7)+PP(262,152,"#c25a8a",1.7)+JJ(210,110,1.05)},
+{c:"Jesus shields a woman from her accusers, and the stones are dropped (John 8:1–11).",a:"Jesus protecting a kneeling woman as accusers walk away",
+ s:'<defs><linearGradient id="sk" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#dfe8f5"/><stop offset="1" stop-color="#f6efe0"/></linearGradient></defs><rect width="400" height="200" fill="url(#sk)"/><rect y="152" width="400" height="48" fill="#cdb78d"/>'+PP(44,150,"#666",1.6)+PP(80,152,"#7a7a7a",1.6)+PP(116,150,"#555",1.6)+'<ellipse cx="146" cy="178" rx="8" ry="4" fill="#8d8d8d"/><ellipse cx="166" cy="184" rx="7" ry="3.5" fill="#9a9a9a"/><ellipse cx="128" cy="186" rx="6" ry="3" fill="#8d8d8d"/>'+JJ(210,110,1.15)+PP(268,172,"#c25a8a",1.7)},
+{c:"Jesus drives the money-changers from the temple, standing up for the poor (John 2:13–16).",a:"Jesus overturning tables in the temple",
+ s:'<rect width="400" height="200" fill="#f3e7d3"/><rect x="26" y="20" width="26" height="150" fill="#e8dcc3" stroke="#c9b894"/><rect x="92" y="20" width="26" height="150" fill="#e8dcc3" stroke="#c9b894"/><rect x="282" y="20" width="26" height="150" fill="#e8dcc3" stroke="#c9b894"/><rect x="348" y="20" width="26" height="150" fill="#e8dcc3" stroke="#c9b894"/><rect y="162" width="400" height="38" fill="#cdb894"/><g transform="rotate(-20 120 160)"><rect x="92" y="150" width="62" height="10" fill="#8a5a2b"/></g><g transform="rotate(18 290 160)"><rect x="262" y="150" width="62" height="10" fill="#8a5a2b"/></g><g fill="#e8c14a" stroke="#b8922a"><circle cx="150" cy="176" r="5"/><circle cx="168" cy="184" r="5"/><circle cx="240" cy="178" r="5"/><circle cx="256" cy="186" r="5"/><circle cx="132" cy="188" r="5"/></g><g fill="#fff" stroke="#bbb"><ellipse cx="70" cy="60" rx="9" ry="5"/><ellipse cx="338" cy="50" rx="9" ry="5"/><ellipse cx="320" cy="84" rx="9" ry="5"/></g>'+JJ(200,112,1.15)},
+{c:"Jesus calms the storm and quiets the fears of His friends (Mark 4:35–41).",a:"Jesus standing in a boat calming the storm",
+ s:'<defs><linearGradient id="sk" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#5f7088"/><stop offset="1" stop-color="#a9bfd8"/></linearGradient></defs><rect width="400" height="200" fill="url(#sk)"/><g fill="#4c5b72"><ellipse cx="70" cy="30" rx="60" ry="20"/><ellipse cx="330" cy="26" rx="64" ry="20"/></g><path d="M200 0L160 100H240Z" fill="#fff3b0" opacity=".4"/><path d="M0 150Q50 132 100 150T200 150T300 150T400 150V200H0Z" fill="#3f6fa8"/><path d="M0 172Q50 156 100 172T200 172T300 172T400 172V200H0Z" fill="#2f5a92"/><path d="M128 148Q200 176 272 148L256 176Q200 190 144 176Z" fill="#8a5a2b" stroke="#5c3a18"/>'+PP(150,150,"#d9822b",1.4)+PP(252,150,"#2e9e6a",1.4)+JJ(200,104,.95)},
+{c:"The Good Samaritan stops to care for a stranger whom others passed by (Luke 10:25–37).",a:"A Samaritan caring for an injured traveller",
+ s:'<defs><linearGradient id="sk" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#cfe6ff"/><stop offset="1" stop-color="#fdf1d6"/></linearGradient></defs><rect width="400" height="200" fill="url(#sk)"/><path d="M0 140Q120 116 240 134T400 126V200H0Z" fill="#9cc28a"/><path d="M0 170Q200 140 400 170V200H0Z" fill="#dcbf90"/>'+house(340,106)+PP(34,148,"#555",1.6)+PP(70,150,"#666",1.6)+PP(150,176,"#b05050",1.5,90)+PP(190,160,"#2f7fd6",1.7)+'<ellipse cx="272" cy="150" rx="28" ry="14" fill="#9b8e82"/><ellipse cx="302" cy="136" rx="9" ry="7" fill="#9b8e82"/><path d="M298 130l2-9 4 8z" fill="#9b8e82"/><rect x="252" y="158" width="5" height="18" fill="#7d7167"/><rect x="286" y="158" width="5" height="18" fill="#7d7167"/>'},
+{c:"Jesus opens His arms to everyone carrying a heavy burden (Matthew 11:28).",a:"Jesus welcoming weary people who lay down their burdens",
+ s:'<defs><linearGradient id="sk" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#e6f1ff"/><stop offset="1" stop-color="#fff6d8"/></linearGradient></defs><rect width="400" height="200" fill="url(#sk)"/><g fill="#fff2b0" opacity=".5"><path d="M200 60L60 0H120Z"/><path d="M200 60L170 0H230Z"/><path d="M200 60L280 0H340Z"/></g><rect y="152" width="400" height="48" fill="#a9cf94"/><ellipse cx="60" cy="140" rx="10" ry="8" fill="#8a6a3a"/>'+PP(70,152,"#7b5cc4",1.5,-8)+'<ellipse cx="338" cy="140" rx="10" ry="8" fill="#8a6a3a"/>'+PP(330,152,"#2e9e6a",1.5,8)+PP(138,152,"#d9822b",1.5)+PP(264,152,"#c25a8a",1.5)+'<ellipse cx="110" cy="176" rx="10" ry="7" fill="#8a6a3a"/><ellipse cx="292" cy="176" rx="10" ry="7" fill="#8a6a3a"/>'+JJ(200,112,1.15)},
+{c:"Jesus points to the birds and the lilies of the field, who trust the Father (Matthew 6:26–29).",a:"Jesus among wild flowers and birds",
+ s:'<defs><linearGradient id="sk" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#bfe3ff"/><stop offset="1" stop-color="#eaf7ff"/></linearGradient></defs><rect width="400" height="200" fill="url(#sk)"/><circle cx="48" cy="38" r="22" fill="#ffd36b"/><path d="M0 130Q90 96 190 128T400 112V200H0Z" fill="#86c27c"/><path d="M0 160Q200 136 400 160V200H0Z" fill="#6bb36b"/><g fill="none" stroke="#3b6e8f" stroke-width="2" stroke-linecap="round"><path d="M250 40q8-9 16 0q8-9 16 0"/><path d="M300 66q8-9 16 0q8-9 16 0"/><path d="M80 80q8-9 16 0q8-9 16 0"/></g><g stroke="#3f8f45" stroke-width="2"><path d="M60 190v-16M100 186v-14M140 192v-18M260 192v-18M300 186v-14M340 190v-16M370 184v-12"/></g><g><circle cx="60" cy="172" r="6" fill="#f06292"/><circle cx="100" cy="170" r="6" fill="#fff"/><circle cx="140" cy="172" r="6" fill="#ffd54f"/><circle cx="260" cy="172" r="6" fill="#ba68c8"/><circle cx="300" cy="170" r="6" fill="#f06292"/><circle cx="340" cy="172" r="6" fill="#fff"/><circle cx="370" cy="170" r="6" fill="#ffd54f"/></g>'+PP(128,156,"#2f7fd6",1.4)+PP(278,156,"#d9822b",1.4)+JJ(200,108,1.1)}
+];
+function ART(i){var s=SCN[i];return s?'<figure class="art"><svg viewBox="0 0 400 200" role="img" aria-label="'+esc(s.a)+'">'+s.s+'</svg><figcaption>'+esc(s.c)+'</figcaption></figure>':""}
+
+// ---- Short (ejaculatory) prayers ----
+var EJ=["Jesus, I trust in You.","My Lord and my God!","Jesus, Mary and Joseph, I love You; save souls.","Sacred Heart of Jesus, I place all my trust in Thee.","Lord, I believe; help Thou my unbelief.","Jesus, meek and humble of heart, make my heart like unto Thine.","Thy will be done.","My Jesus, mercy!","Holy Spirit, come and fill my heart.","Immaculate Heart of Mary, pray for us.","St Joseph, pray for us.","Lord Jesus Christ, Son of God, have mercy on me, a sinner.","O my Jesus, forgive us our sins, save us from the fires of hell, lead all souls to heaven, especially those most in need of Thy mercy. (Fatima prayer, after each decade)","Eternal rest grant unto them, O Lord, and let perpetual light shine upon them.","Praised be Jesus Christ, now and for ever.","Mary, Mother of Grace, Mother of Mercy, shield me from the enemy and receive me at the hour of my death."];
+var ei=0;
+function renderEj(){
+  $("ejp").textContent="“"+EJ[ei]+"”";
+  $("ejl").innerHTML=EJ.map(function(t,i){return '<div class="row"><span>'+esc(t)+'</span><button class="btn" data-i="'+i+'" aria-label="I prayed this one">🙏</button></div>'}).join("");
+}
+function ejAdd(){var k=today(),o=Object.assign({},get(k));o.e=(o.e||0)+1;D[k]=o;save();render();toast("🙏 Offered to God. Short prayers today: "+o.e)}
+$("ejn").onclick=ejAdd;
+$("ejx").onclick=function(){ei=(ei+1)%EJ.length;renderEj()};
+$("ejl").onclick=function(e){var b=e.target.closest("button");if(b){ei=+b.dataset.i;renderEj();ejAdd()}};
+$("ep").onclick=function(){upd(function(o){o.e=(o.e||0)+1})};
+$("em").onclick=function(){upd(function(o){o.e=Math.max(0,(o.e||0)-1)})};
+
+// ---- Today's progress ----
+function renderMeter(){
+  var o=get(sel),s=score(o),left=[];
+  $("mfill").style.width=(s*25)+"%";
+  if(!(o.r>0))left.push("a rosary decade");if(!o.b)left.push("Bible reading");if(!o.m)left.push("Holy Mass");if(!(o.k>0))left.push("one kind act");
+  $("mtxt").textContent=s>=4?"🎉 All four done. Thank God! Write your thank-you letter in the Verses & Gratitude tab.":s+" of 4 done."+(left.length?" Still to come: "+left.join(", ")+".":"");
+  $("en").textContent=o.e||0;
+  renderLetterStatus();
+}
+
+// ---- Pledge blessings ----
+var BL=["Well done, {w}! You kept your promise and carried {p} in prayer. Heaven rejoices over every faithful prayer.","What a gift you have given. {p} was held in your prayers day after day. Thank you for your faithfulness, and may it come back to you as peace.","You finished what you promised, and that takes real love. Your prayers are never wasted; God heard each one. Be proud, and rest in His joy.","Faithful friend of Jesus, your pledge is complete. You have lifted up {p} and made the world a little brighter. Keep walking with courage!"];
+function blessHtml(q,full){
+  var mile=q.g===0&&q.n>0&&q.n%7===0;
+  if(!full&&!mile)return q.l===today()?'<div class="hint" style="margin-top:8px">🌱 Thank you for praying today. Small, faithful steps change hearts.</div>':"";
+  var p=esc(q.w),t=BL[q.id%BL.length].replace("{w}","dear friend").replace("{p}",p);
+  return '<div class="bless"><b>'+(full?"🎉 Pledge complete! ":"🌟 "+q.n+" days of prayer! ")+'</b>'+t+'<br><i>“The LORD bless thee, and keep thee: the LORD make his face shine upon thee, and be gracious unto thee.”</i> <small>Numbers 6:24–25'+vref("Numbers 6:24-25")+'</small></div>';
+}
+function pledgeToast(q){toast(q.g>0&&q.n>=q.g?"🎉 Pledge fulfilled! God bless you for your faithful prayer.":"🙏 Thank you for praying for "+q.w+". Well done!")}
+
+// ---- Thank-you letter ----
+var LK="wwj.letters.v1",LT=[];
+try{LT=JSON.parse(localStorage.getItem(LK))||[]}catch(e){LT=[]}
+function lsv(){try{localStorage.setItem(LK,JSON.stringify(LT))}catch(e){}}
+var LPR=["Thank You, Lord, for today’s small joys: ","Thank You for the people who love me: ","Thank You for the strength You gave me when ","Forgive me for ","Please keep safe tonight: ","I place into Your hands: "];
+var CALM=["Rest now. You have given this day to God, and He holds tomorrow.","Breathe slowly. Everything you offered has been received with love.","Peace be with you. You may lay down your worries; God is awake so you can sleep.","Thank you for pausing to be grateful. A thankful heart is a quiet heart."];
+$("lprompts").innerHTML=LPR.map(function(t,i){return '<button data-i="'+i+'">'+esc(t.replace(/[:\s]+$/,"")+"…")+'</button>'}).join("");
+$("lprompts").onclick=function(e){var b=e.target.closest("button");if(!b)return;var t=$("ltxt");t.value+=(t.value&&!/\n$/.test(t.value)?"\n":"")+LPR[+b.dataset.i];t.focus()};
+function renderLL(){
+  $("llist").innerHTML=LT.length?LT.map(function(l){return '<details class="pr"><summary>'+esc(new Date(l.d+"T12:00:00").toLocaleDateString(undefined,{weekday:"short",day:"numeric",month:"short",year:"numeric"}))+'</summary><p style="white-space:pre-wrap;margin:8px 0">'+esc(l.t)+'</p><button class="btn" data-id="'+l.id+'">Delete</button></details>'}).join(""):'<p class="hint">Your letters will appear here.</p>';
+}
+$("llist").onclick=function(e){var b=e.target.closest("button");if(b){LT=LT.filter(function(l){return l.id!==+b.dataset.id});lsv();renderLL()}};
+$("lsave").onclick=function(){
+  var t=$("ltxt").value.trim();if(!t){$("ltxt").focus();toast("Write a few words first, even one thank-you is enough.");return}
+  LT.unshift({id:Date.now(),d:today(),t:t});lsv();$("ltxt").value="";renderLL();
+  var c=$("lcalm");c.hidden=false;c.innerHTML="💙 <b>Your letter has been offered.</b> "+CALM[LT.length%CALM.length]+" <small class=\"hint\">“In every thing give thanks.” 1 Thessalonians 5:18"+vref("1 Thessalonians 5:18")+"</small>";
+  c.scrollIntoView({block:"center",behavior:"smooth"});
+};
+var bt2,bn=0;
+function breathe(){var c=$("bc");clearTimeout(bt2);bn=0;(function cyc(){if(bn>=4){c.className="";c.textContent="Peace ✓";return}bn++;c.className="in";c.textContent="Breathe in…";bt2=setTimeout(function(){c.className="hold";c.textContent="Hold…";bt2=setTimeout(function(){c.className="out";c.textContent="Breathe out…";bt2=setTimeout(cyc,6000)},2000)},4000)})()}
+$("bstart").onclick=breathe;
+function renderLetterStatus(){
+  var el=$("ltask");if(!el){el=document.createElement("p");el.id="ltask";el.className="warn";var l=$("letter");l.insertBefore(el,l.children[1])}
+  var s=score(get(today()));
+  el.textContent=s>=4?"✨ You have finished all four of today’s tasks. This is the perfect time for your letter.":"Today’s tasks: "+s+" of 4 done. Finish them when you can, then come back here to rest in gratitude. You may also write at any time.";
+}
+
+// ---- Speciality of the day ----
+var so=0;
+var ACT14=["Attend Mass and greet three people warmly.","Pray for someone who is struggling, and do one unseen kindness.","Forgive one small hurt today.","Help someone with their work without being asked.","Spend ten quiet minutes in prayer or adoration.","Give up one comfort and share the saving with the poor.","Call or visit someone who is lonely.","Write a kind note to a teacher, parent or friend.","Say thank you to someone who usually goes unnoticed.","Listen fully to someone without interrupting.","Share a meal or snack with someone in need.","Speak only kind words all day.","Pray the rosary for peace in the world.","Visit or phone an elderly or sick person."];
+function doy(d){return Math.floor((new Date(d.getFullYear(),d.getMonth(),d.getDate())-new Date(d.getFullYear(),0,0))/864e5)}
+function feastsOn(d){return [movable(d),FEAST[(d.getMonth()+1)+"-"+d.getDate()]].filter(Boolean)}
+function renderSpec(){
+  var d=new Date();d.setDate(d.getDate()+so);var dw=d.getDay(),f=feastsOn(d),e=$("sfeast"),i,x,ff;
+  $("sdate").textContent=(so===0?"Today · ":"")+d.toLocaleDateString(undefined,{weekday:"long",day:"numeric",month:"long",year:"numeric"});
+  if(f.length){e.className="feast";e.innerHTML=f.map(function(n){return (/^Sts? /.test(n)?"🕊 Saint of the day: ":"🎉 Feast: ")+esc(n)}).join("<br>")}
+  else{e.className="hint";e.textContent="An ordinary day in the Church’s year. Every day is holy."}
+  $("sfnext").textContent="";
+  for(i=1;i<=400;i++){x=new Date(d.getFullYear(),d.getMonth(),d.getDate()+i);ff=feastsOn(x);if(ff.length){$("sfnext").textContent=ff[0]+" · "+x.toLocaleDateString(undefined,{weekday:"short",day:"numeric",month:"short"})+" (in "+i+" day"+(i===1?"":"s")+")";break}}
+  $("sdev").textContent=DEVO[dw];
+  $("smt").textContent="Rosary: "+MYS[DM[dw]][0];$("smys").textContent=MYS[DM[dw]][1];
+  $("sact").textContent=ACT14[doy(d)%ACT14.length];
+  $("sdo").hidden=so!==0;$("sdo").textContent="✓ I did today’s great work";$("stoday").hidden=so===0;
+}
+$("spv").onclick=function(){so--;renderSpec()};
+$("snx").onclick=function(){so++;renderSpec()};
+$("stoday").onclick=function(){so=0;renderSpec()};
+$("sdo").onclick=function(){var k=today(),o=Object.assign({},get(k));o.k++;D[k]=o;save();render();this.textContent="✓ Done, thank you!";toast("🌟 Great work! One more act of love today.")};
+
+// ---- Friendly extras ----
+(function(){var h=new Date().getHours(),g=h<12?"Good morning":h<17?"Good afternoon":"Good evening",p=document.createElement("p");p.id="greet";p.textContent=g+"! God is glad you are here. 🕊";document.querySelector(".tag").after(p)})();
+$("guide").open=!Object.keys(D).length;
+window.addEventListener("scroll",function(){$("totop").style.display=window.scrollY>500?"block":"none"},{passive:true});
+$("totop").onclick=function(){window.scrollTo({top:0,behavior:"smooth"})};
+var lastD=today();setInterval(function(){if(today()!==lastD){lastD=today();so=0;sel=today();renderSpec();render()}},60000);
+renderEj();renderLL();
+
+load();pload();gload();$("goalR").value=G.r;$("goalV").value=G.v;$("goalK").value=G.k;render();renderIssues();renderP();renderV();renderSpec();renderEj();renderLL();renderMeter();
+})();
+</script>
+</body>
+</html>
